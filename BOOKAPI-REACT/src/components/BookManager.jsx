@@ -30,7 +30,8 @@ const BookManager = () => {
       const res = await axios.get(`${baseUrl}/all`);
       setBooks(res.data);
     } catch (error) {
-      setMessage('Failed to fetch books.');
+      console.error('Error fetching books:', error);
+      setMessage(`Failed to fetch books. ${error.response?.data || error.message}`);
     }
   };
 
@@ -51,23 +52,35 @@ const BookManager = () => {
   const addBook = async () => {
     if (!validateForm()) return;
     try {
-      await axios.post(`${baseUrl}/add`, book);
+      const bookData = {
+        ...book,
+        id: parseInt(book.id),
+        price: parseFloat(book.price)
+      };
+      await axios.post(`${baseUrl}/add`, bookData);
       setMessage('Book added successfully.');
       fetchAllBooks();
       resetForm();
     } catch (error) {
-      setMessage('Error adding book.');
+      console.error('Error adding book:', error);
+      setMessage(`Error adding book. ${error.response?.data || error.message}`);
     }
   };
 
   const updateBook = async () => {
     if (!validateForm()) return;
     try {
-      await axios.put(`${baseUrl}/update`, book);
+      const bookData = {
+        ...book,
+        id: parseInt(book.id),
+        price: parseFloat(book.price)
+      };
+      await axios.put(`${baseUrl}/update`, bookData);
       setMessage('Book updated successfully.');
       fetchAllBooks();
       resetForm();
     } catch (error) {
+      console.error('Error updating book:', error);
       setMessage('Error updating book.');
     }
   };
